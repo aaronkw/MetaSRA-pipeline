@@ -1,0 +1,14 @@
+name: metasra
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - python=2.7
+  - marisa-trie
+  - numpy
+  - scipy
+  - scikit-learn
+  - dill
+  - nltk
+  - pygraphviz
