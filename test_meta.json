@@ -1,0 +1,143 @@
+[
+    {
+        "sample type": "tissue",
+        "real-value properties": [
+            {
+                "property_id": "EFO:0000246",
+                "unit_id": "missing",
+                "value": 48.0
+            }
+        ],
+        "mapped ontology terms": [
+            "UBERON:0010890",
+            "UBERON:0000468",
+            "UBERON:0001379",
+            "UBERON:0001015",
+            "UBERON:0000465",
+            "UBERON:0001377",
+            "UBERON:0000467",
+            "UBERON:0014792",
+            "UBERON:0003100",
+            "UBERON:0018254",
+            "UBERON:0000154",
+            "UBERON:0000026",
+            "UBERON:0004708",
+            "UBERON:0004709",
+            "UBERON:0015212",
+            "UBERON:0007271",
+            "UBERON:0007270",
+            "UBERON:0014795",
+            "UBERON:0002101",
+            "UBERON:0002103",
+            "UBERON:0014892",
+            "UBERON:0003663",
+            "UBERON:0003661",
+            "UBERON:0001630",
+            "UBERON:0000475",
+            "UBERON:0011216",
+            "UBERON:0001062",
+            "UBERON:0002204",
+            "UBERON:0010000",
+            "UBERON:0000383",
+            "UBERON:0000061",
+            "UBERON:0000062",
+            "UBERON:0010707",
+            "UBERON:0005090",
+            "UBERON:0004482",
+            "UBERON:0004480",
+            "UBERON:0010709"
+        ],
+        "direct mapped terms": {
+            "UBERON:0001630": {
+                "original": "vastus lateralis muscle",
+                "term_name": "muscle organ"
+            },
+            "UBERON:0003100": {
+                "original": "female",
+                "term_name": "female organism"
+            },
+            "UBERON:0001379": {
+                "original": "vastus lateralis muscle",
+                "term_name": "vastus lateralis"
+            },
+            "UBERON:0001015": {
+                "original": "vastus lateralis muscle",
+                "term_name": "musculature"
+            }
+        },
+        "sample-type confidence": 0.856545579519626
+    },
+    {
+        "sample type": "tissue",
+        "real-value properties": [
+            {
+                "property_id": "EFO:0000246",
+                "unit_id": "missing",
+                "value": 29.0
+            }
+        ],
+        "mapped ontology terms": [
+            "UBERON:0010890",
+            "UBERON:0000468",
+            "UBERON:0001379",
+            "UBERON:0001015",
+            "UBERON:0000465",
+            "UBERON:0001377",
+            "UBERON:0000467",
+            "UBERON:0014792",
+            "UBERON:0003101",
+            "UBERON:0003100",
+            "UBERON:0018254",
+            "UBERON:0000154",
+            "UBERON:0000026",
+            "UBERON:0004708",
+            "UBERON:0004709",
+            "UBERON:0015212",
+            "UBERON:0007271",
+            "UBERON:0007270",
+            "UBERON:0014795",
+            "UBERON:0002101",
+            "UBERON:0002103",
+            "UBERON:0014892",
+            "UBERON:0003663",
+            "UBERON:0003661",
+            "UBERON:0001630",
+            "UBERON:0000475",
+            "UBERON:0011216",
+            "UBERON:0001062",
+            "UBERON:0002204",
+            "UBERON:0010000",
+            "UBERON:0000383",
+            "UBERON:0000061",
+            "UBERON:0000062",
+            "UBERON:0010707",
+            "UBERON:0005090",
+            "UBERON:0004482",
+            "UBERON:0004480",
+            "UBERON:0010709"
+        ],
+        "direct mapped terms": {
+            "UBERON:0001630": {
+                "original": "vastus lateralis muscle",
+                "term_name": "muscle organ"
+            },
+            "UBERON:0003101": {
+                "original": "male",
+                "term_name": "male organism"
+            },
+            "UBERON:0003100": {
+                "original": "vastus lateralis muscle_female",
+                "term_name": "female organism"
+            },
+            "UBERON:0001379": {
+                "original": "vastus lateralis muscle",
+                "term_name": "vastus lateralis"
+            },
+            "UBERON:0001015": {
+                "original": "vastus lateralis muscle",
+                "term_name": "musculature"
+            }
+        },
+        "sample-type confidence": 0.856545579519626
+    }
+]

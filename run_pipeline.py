@@ -20,9 +20,11 @@ from map_sra_to_ontology import ontology_graph
 from map_sra_to_ontology import load_ontology
 from map_sra_to_ontology import config
 import predict_sample_type
-from predict_sample_type import run_sample_type_predictor
+from map_sra_to_ontology import run_sample_type_predictor
 from predict_sample_type.learn_classifier import *
 from map_sra_to_ontology import pipeline_components as pc
+from map_sra_to_ontology.load_specialist_lex import SpecialistLexicon
+from map_sra_to_ontology.pipeline_components import * 
 
 def main():
     parser = OptionParser()
@@ -30,6 +32,7 @@ def main():
     (options, args) = parser.parse_args()
    
     input_f = args[0]
+    output_f = os.path.splitext(input_f)[0] + '_meta.json'
      
     # Map key-value pairs to ontologies
     with open(input_f, "r") as f:
@@ -60,17 +63,22 @@ def main():
         outputs.append(
             run_pipeline_on_key_vals(tag_to_val, ont_id_to_og, mappings)
         )
-    print json.dumps(outputs, indent=4, separators=(',', ': '))
+
+    json_obj = json.dumps(outputs, indent=4, separators=(',', ': '))
+    with open(output_f, 'w') as ofile:
+        ofile.write(json_obj)
+
 
 def run_pipeline_on_key_vals(tag_to_val, ont_id_to_og, mapping_data): 
-    
     mapped_terms = []
+    mapped_term_dict = {}
     real_val_props = []
     for mapped_term_data in mapping_data["mapped_terms"]:
         term_id = mapped_term_data["term_id"]
         for ont in ont_id_to_og.values():
             if term_id in ont.get_mappable_term_ids():
                 mapped_terms.append(term_id)
+                mapped_term_dict[term_id] = {'original':mapped_term_data['original_value'], 'term_name':ont.id_to_term[term_id].name}
                 break
     for real_val_data in mapping_data["real_value_properties"]:
         real_val_prop = {
@@ -97,7 +105,9 @@ def run_pipeline_on_key_vals(tag_to_val, ont_id_to_og, mapping_data):
         "mapped ontology terms": mapped_terms, 
         "real-value properties": real_val_props, 
         "sample type": predicted, 
-        "sample-type confidence": confidence}
+        "sample-type confidence": confidence,
+        "direct mapped terms": mapped_term_dict
+    }
 
     return mapping_data
     #print json.dumps(mapping_data, indent=4, separators=(',', ': '))
