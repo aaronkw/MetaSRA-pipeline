@@ -12,6 +12,9 @@
 echo "Downloading ontologies..."
 python download_ontologies.py
 
+# Download nltk
+python download_nltk.py
+
 # Reformat Cellosaurus
 echo "Reformating Cellosaurus..."
 python reformat_cellosaurus.py
