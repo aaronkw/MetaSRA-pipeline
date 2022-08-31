@@ -7,7 +7,6 @@
 from optparse import OptionParser
 from collections import defaultdict
 import json
-from sets import Set
 from collections import deque
 
 import map_sra_to_ontology
@@ -16,7 +15,7 @@ from map_sra_to_ontology import load_ontology
 def main():
     og, x, y = load_ontology.load("13")
     problematic_terms = deque()
-    for t_id, term in og.id_to_term.iteritems():
+    for t_id, term in og.id_to_term.items():
         if "carcinoma" in term.name or "adenocarcinoma" in term.name:
             problematic_terms.append(term)
 

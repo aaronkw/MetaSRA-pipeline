@@ -99,7 +99,7 @@ def condorize_pipeline(
         symlinks = []
         for in_f in in_files_locs:
             symlink = join(job_dir, basename(in_f))
-            print "ln -s %s %s" % (in_f, symlink)
+            print("ln -s %s %s" % (in_f, symlink))
             subprocess.call("ln -s %s %s" % (in_f, symlink), shell=True, env=None)
             symlinks.append(symlink)
 

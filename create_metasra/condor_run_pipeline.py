@@ -65,19 +65,22 @@ def run_pipeline(pipeline_func, sample_accs, sample_to_metadata):
     c = 1
     for sample_acc in sample_accs:
         try:
-            print "Sample #%d: %s" % (c, sample_acc)
+            print("Sample #%d: %s" % (c, sample_acc))
             c += 1
             tag_to_val = sample_to_metadata[sample_acc]
 
             # Make sure the key-value pairs are unicode strings
             decoded_tag_to_val = {}
-            for tag, val in tag_to_val.iteritems():
+            for tag, val in tag_to_val.items():
                 if isinstance(tag, unicode) and not isinstance(val, unicode):
-                    decoded_tag_to_val[tag] = val.decode('utf-8')
+                    #decoded_tag_to_val[tag] = val.decode('utf-8')
+                    decoded_tag_to_val[tag] = val
                 elif not isinstance(tag, unicode) and isinstance(val, unicode):
-                    decoded_tag_to_val[tag.decode('utf-8')] = val
+                    #decoded_tag_to_val[tag.decode('utf-8')] = val
+                    decoded_tag_to_val[tag] = val
                 elif not isinstance(tag, unicode) and not isinstance(val, unicode):
-                    decoded_tag_to_val[tag.decode('utf-8')] = val.decode('utf-8')
+                    #decoded_tag_to_val[tag.decode('utf-8')] = val.decode('utf-8')
+                    decoded_tag_to_val[tag] = val
                 else:
                     decoded_tag_to_val[tag] = val
             tag_to_val = decoded_tag_to_val
@@ -93,8 +96,8 @@ def run_pipeline(pipeline_func, sample_accs, sample_to_metadata):
                 ]
             }
         except Exception as e:
-            print "ERROR! An error occurred processing sample %s. %s" % (sample_acc, e)
-            print traceback.print_exc()
+            print("ERROR! An error occurred processing sample %s. %s" % (sample_acc, e))
+            print("{}".format(traceback.print_exc()))
     return sample_acc_to_matches
 
 if __name__ == "__main__":

@@ -20,9 +20,12 @@ def main():
         db_cursor = db_conn.cursor()
         returned = db_cursor.execute(sql_cmd)
         for r in returned:
-            sample_acc = r[0].encode('utf-8')
-            tag = r[1].encode('utf-8')
-            value = r[2].encode('utf-8')
+            #sample_acc = r[0].encode('utf-8')
+            #tag = r[1].encode('utf-8')
+            #value = r[2].encode('utf-8')
+            sample_acc = r[0]
+            tag = r[1]
+            value = r[2]
 
             if sample_acc not in sample_to_tag_to_value:   
                 sample_to_tag_to_value[sample_acc] = {}    

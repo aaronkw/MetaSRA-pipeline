@@ -1,0 +1,1 @@
+export PYTHONPATH=/mnt/home/yliu/projects/MetaSRA-pipeline:/mnt/home/yliu/projects/MetaSRA-pipeline/map_sra_to_ontology:/mnt/home/yliu/projects/MetaSRA-pipeline/bktree::/mnt/home/yliu/projects/MetaSRA-pipeline/map_sra_to_ontology/predict_sample_type:/mnt/home/yliu/projects/MetaSRA-pipeline/map_sra_to_ontology/fuzzy_matching_index
