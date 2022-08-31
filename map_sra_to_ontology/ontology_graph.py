@@ -2,8 +2,8 @@
 
 import re
 from optparse import OptionParser
-from Queue import Queue
-#from queue import Queue
+#from Queue import Queue
+from queue import Queue
 try:
     import pygraphviz as pgv
 except:
