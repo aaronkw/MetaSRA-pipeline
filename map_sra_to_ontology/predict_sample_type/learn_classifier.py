@@ -3,7 +3,7 @@ import json
 import nltk
 from nltk.tokenize import word_tokenize
 import dill
-import numpy as np
+import numpy
 from sets import Set
 from collections import Counter, defaultdict 
 
@@ -147,7 +147,7 @@ class FeatureConverter:
         self.term_vec_scaffold = term_vec_scaffold
 
     def convert_to_features(self, n_grams, terms):
-        feature_vec = np.zeros(len(self.ngram_vec_scaffold) + len(self.term_vec_scaffold))
+        feature_vec = numpy.zeros(len(self.ngram_vec_scaffold) + len(self.term_vec_scaffold))
         c = Counter(n_grams)
         for i, feat in enumerate(self.ngram_vec_scaffold):
             if feat in c:
