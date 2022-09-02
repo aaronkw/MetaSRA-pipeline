@@ -1,8 +1,3 @@
 export PYTHONPATH=/mnt/home/yliu/projects/MetaSRA-pipeline:/mnt/home/yliu/projects/MetaSRA-pipeline/map_sra_to_ontology:/mnt/home/yliu/projects/MetaSRA-pipeline/bktree::/mnt/home/yliu/projects/MetaSRA-pipeline/map_sra_to_ontology/predict_sample_type:/mnt/home/yliu/projects/MetaSRA-pipeline/map_sra_to_ontology/fuzzy_matching_index
 
-from one_vs_rest_classifier_same_features import OneVsRestClassifier
-import dill
-f=open("/mnt/home/yliu/projects/MetaSRA-pipeline/map_sra_to_ontology/predict_sample_type/sample_type_classifier.dill", "rb")
-x=dill.load(f)
-
 
