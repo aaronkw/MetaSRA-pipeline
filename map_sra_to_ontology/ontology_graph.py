@@ -2,7 +2,6 @@
 
 import re
 from optparse import OptionParser
-#from Queue import Queue
 from queue import Queue
 try:
     import pygraphviz as pgv
@@ -11,7 +10,7 @@ except:
 import config
 
 import pkg_resources as pr
-import os
+import copy,os
 from os.path import join
 import json
 
@@ -328,6 +327,7 @@ def parse_obos(ont_to_loc, restrict_to_idspaces=None, include_obsolete=False):
     #return OntologyGraph(id_to_term, name_to_ids)
     return OntologyGraph(id_to_term)
 
+OBO_CACHE={}
 def parse_obo(obo_file, restrict_to_idspaces=None, include_obsolete=False):
     """
     Parse OBO file.
@@ -372,8 +372,22 @@ def parse_obo(obo_file, restrict_to_idspaces=None, include_obsolete=False):
                     term.relationships[relation].remove(sup_term_id)
                 if not term.relationships[relation]:
                     del term.relationships[relation]
-        
 
+    def savCache (obo_file, id_to_term, name_to_ids):
+        #OBO_CACHE[obo_file] = {'stat': os.stat(obo_file), 'parse': (copy.deepcopy(id_to_term), copy.deepcopy(name_to_ids))}
+        OBO_CACHE[obo_file] = {'stat': os.stat(obo_file), 'parse': (copy.deepcopy(id_to_term), copy.deepcopy(name_to_ids))}
+    def inCache (obo_file):        
+        if obo_file in OBO_CACHE:
+           obo_record = OBO_CACHE[obo_file]
+           if obo_record['stat'] == os.stat(obo_file):
+              return copy.deepcopy(obo_record['parse'])
+        return None
+    
+    sav = inCache(obo_file)
+    if sav:
+       print("Loading ontology from cache instead of %s ..." % obo_file)
+       return sav
+       
     header_info = {}
     print("Loading ontology from %s ..." % obo_file)
     name_to_ids = {}
@@ -403,6 +417,7 @@ def parse_obo(obo_file, restrict_to_idspaces=None, include_obsolete=False):
         #    add_inverse_relationship_to_parents(term, "is_a", "inv_is_a")
         #    add_inverse_relationship_to_parents(term, "part_of", "inv_part_of")
 
+    savCache (obo_file, id_to_term, name_to_ids)
     return id_to_term, name_to_ids    
 
 

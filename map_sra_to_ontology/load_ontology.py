@@ -4,7 +4,9 @@ import json
 import config
 import ontology_graph
 
+SAV_LOAD = {}
 def load(ontology_index):
+    print("-------{}--------".format(__name__))
     resource_package = __name__
     config_f = pr.resource_filename(resource_package, "./ontology_configurations.json")
     with open(config_f, "r") as f:
@@ -33,4 +35,5 @@ def main():
     print(og.id_to_term["CVCL:C792"])
 
 if __name__ == "__main__":
+    print("-------")
     main()
