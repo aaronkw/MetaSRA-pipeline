@@ -13,6 +13,7 @@ import pkg_resources as pr
 import copy,os
 from os.path import join
 import json
+from collections import defaultdict
 
 resource_package = __name__
 
@@ -61,6 +62,11 @@ class Term:
         self.relationships = relationships
         self.property_values = property_values
         self.subsets = subsets
+    def __copy__(self):
+        newone = Term(**self.__dict__)
+        #newone.__dict__.update(self.__dict__)
+        newone.synonyms = self.synonyms.copy()
+        return newone
 
     def __repr__(self):
         rep = {
@@ -71,6 +77,7 @@ class Term:
             "relationships": self.relationships,
             "subsets": self.subsets}
         return str(rep)
+
 
     def is_a(self):
         return self.get_related_terms("is_a")
@@ -175,6 +182,22 @@ class MappableOntologyGraph(OntologyGraph):
             if x not in self.nonmappable_terms
         ]
  
+       
+TERM_TO_EXTRA_SYNS={}
+def term_to_extra_synonyms():
+    if not TERM_TO_EXTRA_SYNS:
+       cvcl_syns_f = pr.resource_filename(
+           resource_package,
+           join("metadata", "term_to_extra_synonyms.json")
+       )
+       term_to_syns = None
+       with open(cvcl_syns_f, "r") as f:
+           term_to_syns = json.load(f)
+       if term_to_syns:
+          for tid,syn_lst in term_to_syns.items():
+              TERM_TO_EXTRA_SYNS[tid] = [Synonym(syn, "ENRICHED") for syn in syn_lst]
+    return TERM_TO_EXTRA_SYNS
+
 
 def build_ontology(ont_to_loc, restrict_to_idspaces=None, 
     include_obsolete=False, restrict_to_roots=None, 
@@ -185,17 +208,22 @@ def build_ontology(ont_to_loc, restrict_to_idspaces=None,
         include_obsolete=include_obsolete)
 
     # Add enriched synonyms
-    cvcl_syns_f = pr.resource_filename(
-        resource_package, 
-        join("metadata", "term_to_extra_synonyms.json")
-    )
-    term_to_syns = None
-    with open(cvcl_syns_f, "r") as f:
-        term_to_syns = json.load(f)
+    term_to_extra = term_to_extra_synonyms()
     for term in og.id_to_term.values():
-        if term.id in term_to_syns:
-            for syn in term_to_syns[term.id]:
-                term.synonyms.add(Synonym(syn, "ENRICHED"))
+        if term.id in term_to_extra:
+           term.synonyms=term.synonyms.union(term_to_extra[term.id])
+
+    #cvcl_syns_f = pr.resource_filename(
+    #    resource_package, 
+    #    join("metadata", "term_to_extra_synonyms.json")
+    #)
+    #term_to_syns = None
+    #with open(cvcl_syns_f, "r") as f:
+    #    term_to_syns = json.load(f)
+    #for term in og.id_to_term.values():
+    #    if term.id in term_to_syns:
+    #        for syn in term_to_syns[term.id]:
+    #            term.synonyms.add(Synonym(syn, "ENRICHED"))
 
     # Remove specified synonyms
     term_to_remove_syns_f = pr.resource_filename(
@@ -328,6 +356,28 @@ def parse_obos(ont_to_loc, restrict_to_idspaces=None, include_obsolete=False):
     return OntologyGraph(id_to_term)
 
 OBO_CACHE={}
+def name_to_ids_copy (d):
+    cp = {}
+    for name, ids in d.items():
+        cp[name] = ids.copy()
+    return cp
+def id_to_term_copy (d):
+    cp = {}
+    for tid, term in d.items():
+        cp[tid] = copy.copy(term)
+    return cp
+
+def savCache (obo_file, id_to_term, name_to_ids):
+    #OBO_CACHE[obo_file] = {'stat': os.stat(obo_file), 'parse': (copy.deepcopy(id_to_term), copy.deepcopy(name_to_ids))}
+    OBO_CACHE[obo_file] = (id_to_term_copy(id_to_term), name_to_ids_copy(name_to_ids))
+    return id_to_term, name_to_ids
+    
+def inCache (obo_file):
+    if obo_file in OBO_CACHE:
+       obo_record = OBO_CACHE[obo_file]
+       return id_to_term_copy(obo_record[0]), name_to_ids_copy(obo_record[1])
+    return None
+
 def parse_obo(obo_file, restrict_to_idspaces=None, include_obsolete=False):
     """
     Parse OBO file.
@@ -373,21 +423,11 @@ def parse_obo(obo_file, restrict_to_idspaces=None, include_obsolete=False):
                 if not term.relationships[relation]:
                     del term.relationships[relation]
 
-    def savCache (obo_file, id_to_term, name_to_ids):
-        #OBO_CACHE[obo_file] = {'stat': os.stat(obo_file), 'parse': (copy.deepcopy(id_to_term), copy.deepcopy(name_to_ids))}
-        OBO_CACHE[obo_file] = {'stat': os.stat(obo_file), 'parse': (copy.deepcopy(id_to_term), copy.deepcopy(name_to_ids))}
-    def inCache (obo_file):        
-        if obo_file in OBO_CACHE:
-           obo_record = OBO_CACHE[obo_file]
-           if obo_record['stat'] == os.stat(obo_file):
-              return copy.deepcopy(obo_record['parse'])
-        return None
-    
     sav = inCache(obo_file)
     if sav:
        print("Loading ontology from cache instead of %s ..." % obo_file)
        return sav
-       
+
     header_info = {}
     print("Loading ontology from %s ..." % obo_file)
     name_to_ids = {}
@@ -420,15 +460,13 @@ def parse_obo(obo_file, restrict_to_idspaces=None, include_obsolete=False):
     savCache (obo_file, id_to_term, name_to_ids)
     return id_to_term, name_to_ids    
 
-
-
 def parse_entity(lines, restrict_to_idspaces):
     def parse_term_attrs(lines):
-        attrs = {}
+        attrs = defaultdict(list)
         for line in lines:
             tokens = line.split(":")
-            if not tokens[0].strip() in attrs.keys():
-                attrs[tokens[0].strip()] = []
+            #if not tokens[0].strip() in attrs.keys():
+            #    attrs[tokens[0].strip()] = []
             attrs[tokens[0].strip()].append(":".join(tokens[1:]).strip())
         return attrs
 
