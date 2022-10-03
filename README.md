@@ -14,6 +14,8 @@ This project requires the following Python libraries:
 - scikit-learn (http://scikit-learn.org/stable/)
 - setuptools (https://pypi.python.org/pypi/setuptools)
 - marisa-trie (https://pypi.python.org/pypi/marisa-trie)
+- nltk
+- dill
 
 
 ## Setup

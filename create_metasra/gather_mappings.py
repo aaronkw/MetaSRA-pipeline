@@ -27,21 +27,21 @@ def main():
         metasra_mappings_f = join(path_d, job_out_fname)
         try:
             with open(metasra_mappings_f, 'r') as f:
-                #print "loading %s..." % metasra_mappings_f
+                #print("loading %s..." % metasra_mappings_f
                 mappings = json.load(f)
-                for k,v in mappings.iteritems():
+                for k,v in mappings.items():
                     all_metasra_mappings[k] = v
                     n_found += 1
         except ValueError as e:
-            print "Could not decode %s. Error: %s" % (metasra_mappings_f, str(e))
+            print("Could not decode %s. Error: %s" % (metasra_mappings_f, str(e)))
             log_data['Failed job output files'].append(
                 metasra_mappings_f
             )
             
-    print "Extracted %d mappings..." % n_found
+    print("Extracted %d mappings..." % n_found)
     log_data['Total samples with mappings'] = n_found
 
-    print len(all_metasra_mappings)    
+    print(len(all_metasra_mappings))    
     with open(out_file, 'w') as f:
         json.dump(
             all_metasra_mappings,

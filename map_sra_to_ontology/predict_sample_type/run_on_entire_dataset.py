@@ -5,7 +5,6 @@ import os
 from os.path import join
 import dill
 
-from sets import Set
 from collections import Counter, defaultdict
 
 import numpy as np
@@ -21,14 +20,14 @@ OGS = [load_ontology.load(ont_id)[0] for ont_id in ONT_IDS]
 SAMPLE_TO_TAG_TO_VALUES_F = "/ua/mnbernstein/projects/tbcp/metadata/ontology/src/map_sra_to_ontology/metadata/sample_to_tag_to_values.json"
 
 def get_all_samples_to_mappings(mappings_f):
-    print "loading sample to predicted ontology term mappings..."
+    print("loading sample to predicted ontology term mappings...")
     sample_to_predicted_terms = {}
     sample_to_real_val_props = {}
     #for fname in os.listdir(matches_file_dir):
     with open(mappings_f, 'r') as f:
         j = json.load(f)
-        for sample_acc, map_data in j.iteritems():
-            sample_to_predicted_terms[sample_acc] = Set()
+        for sample_acc, map_data in j.items():
+            sample_to_predicted_terms[sample_acc] = set()
             mapped_term_ids = [
                 x["term_id"] 
                 for x in map_data["mapped_terms"]
@@ -49,8 +48,8 @@ def get_all_samples_to_mappings(mappings_f):
             ]
             sample_to_real_val_props[sample_acc] = real_val_props
 
-        for sample_acc, predicted_terms in sample_to_predicted_terms.iteritems():
-            sup_terms = Set()
+        for sample_acc, predicted_terms in sample_to_predicted_terms.items():
+            sup_terms = set()
             for og in OGS:
                 for term in predicted_terms:
                     sup_terms.update(
@@ -115,19 +114,19 @@ def main():
     sample_to_prediction = {}
     not_found = 0
     pred_none = 0
-    for sample_acc, tag_to_values in sample_to_tag_to_values.iteritems(): 
+    for sample_acc, tag_to_values in sample_to_tag_to_values.items(): 
         if sample_acc not in sample_to_predicted_terms_all:
             # The mapping process may have failed for this sample
             not_found += 1
             continue
 
-        #print "\nPredicting %s" % sample_acc
+        #print("\nPredicting %s" % sample_acc
         try:
             n_grams = lc.get_ngrams_from_tag_to_val(
                 sample_to_tag_to_values[sample_acc]
             )
         except:
-            print "Error retrieving n-grams!"
+            print("Error retrieving n-grams!")
             n_grams = []
         feat_v = vectorizer.convert_to_features(
             n_grams, 
@@ -139,12 +138,12 @@ def main():
             sample_to_real_val_props_all[sample_acc]
         )
         if predicted == None or confidence == None:
-            #print "HUH? Sample %s was predicted as None..." % sample_acc
+            #print("HUH? Sample %s was predicted as None..." % sample_acc
             pred_none += 1
         sample_to_prediction[sample_acc] = (predicted, confidence)
 
-    print "%d samples were not found in mappings file" % not_found
-    print "%d samples were predicted as none" % pred_none
+    print("%d samples were not found in mappings file" % not_found)
+    print("%d samples were predicted as none" % pred_none)
     log_data = {
         'Number samples in metadata, but not mapping file': not_found,
         'Number of samples with prediction errors': pred_none 

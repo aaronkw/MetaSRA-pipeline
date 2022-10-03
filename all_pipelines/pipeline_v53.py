@@ -1,6 +1,5 @@
 from optparse import OptionParser
 import json
-from sets import Set
 import sys
 from collections import defaultdict, deque
 import time

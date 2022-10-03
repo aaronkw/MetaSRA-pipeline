@@ -65,7 +65,7 @@ def main():
         c_write.execute(CREATE_SAMPLE_TYPE_TABLE_SQL)
         c_write.execute(CREATE_SAMPLE_INFO_TABLE_SQL)
         for dbf, assay, spec in zip(dbfs, assays, species):
-            print 'Concatenating data from %s' % dbf
+            print('Concatenating data from %s' % dbf)
             with sqlite3.connect(dbf) as in_db_conn:
                 c_read = in_db_conn.cursor()
                 # Add ontology term data
@@ -83,7 +83,7 @@ def main():
                     sample = r[0]
                     insert_tuple = (sample, spec, assay)
                     c_write.execute(INSERT_SAMPLE_INFO_SQL, insert_tuple)
-            print 'done.'                 
+            print('done.')                 
 
 
 

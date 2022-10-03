@@ -1,10 +1,10 @@
-name: metasra
+name: metasra-py3
 channels:
   - conda-forge
   - bioconda
   - defaults
 dependencies:
-  - python=2.7
+  - python=3.8
   - marisa-trie
   - numpy
   - scipy
