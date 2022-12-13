@@ -328,6 +328,7 @@ def get_ngrams(text, n):
     delimiters = ["_", "/", "-"]
     for delim in delimiters:
         text = text.replace(delim, " ")
+    text = text.replace("''", "'")        # a quick fix for "''" issue as mentioned below
 
     words = nltk.word_tokenize(text)
 

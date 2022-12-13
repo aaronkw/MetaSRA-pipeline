@@ -311,7 +311,7 @@ class TextReasoningGraph:
     def __str__(self):
         try:
             r_str = "key-value nodes:\n"  
-            for kv_node in self.key_val_nodes:
+            for kv_node in sorted(self.key_val_nodes, key=lambda x: x.key):
                 r_str += "%s\n" % kv_node
             r_str += "\ntoken nodes:\n"
             for tok_node in self.token_nodes:
