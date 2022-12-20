@@ -38,10 +38,6 @@ def bag_dist_multiset (str_a, str_b):
         else:
            neg += v
     neg = -neg
-    #tot = sum (count.values())
-    #pos = sum ([c  for c in count.values() if c > 0])
-    #neg = sum ([-c for c in count.values() if c < 0])
-    #neg = pos - tot        # (-neg) + pos = total
     return pos if pos > neg else neg
         
         

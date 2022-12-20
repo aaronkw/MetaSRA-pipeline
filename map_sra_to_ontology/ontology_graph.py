@@ -213,18 +213,6 @@ def build_ontology(ont_to_loc, restrict_to_idspaces=None,
         if term.id in term_to_extra:
            term.synonyms=term.synonyms.union(term_to_extra[term.id])
 
-    #cvcl_syns_f = pr.resource_filename(
-    #    resource_package, 
-    #    join("metadata", "term_to_extra_synonyms.json")
-    #)
-    #term_to_syns = None
-    #with open(cvcl_syns_f, "r") as f:
-    #    term_to_syns = json.load(f)
-    #for term in og.id_to_term.values():
-    #    if term.id in term_to_syns:
-    #        for syn in term_to_syns[term.id]:
-    #            term.synonyms.add(Synonym(syn, "ENRICHED"))
-
     # Remove specified synonyms
     term_to_remove_syns_f = pr.resource_filename(
         resource_package, 

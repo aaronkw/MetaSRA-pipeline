@@ -3,6 +3,8 @@ import glob, json, os, os.path, sys
 #You need need to modify INPUT_DIR, TASKOUT_DIR to point to the right directory
 INPUT_DIR   = '/mnt/ceph/users/humanbase/data/meta/datasets/'
 TASKOUT_DIR = '~/ceph/projects/MetaSRA-pipeline/data/'
+BIG_FILE_SIZE = 300000           #when divide_big is set True, we will divide the files bigger than this size
+SAMPLE_COUNT  = 2000             #                             each resulting file will have this number of samples
 
 #create disbatch taskfile "disB_tasks_all" that include all the tasks for the input files under INPUT_DIR
 #if divide_big is set to True, then the big input file will be divided into smaller ones
@@ -25,17 +27,17 @@ def checkFile (file_name, task_file, divide_big):
     f_lst      = []
     if size==0:
        print("Ignore empty data file {}".format(file_name))
-    elif (divide_big and size>300000):
+    elif (divide_big and size>BIG_FILE_SIZE):
        print("Divide big data file {} (size {})".format(file_name, size))
        lst   = []
        with open(file_name, "r") as f:
             lst = json.load(f)
-       # 2000 samples in a file
-       for idx in range(0, len(lst), 2000):
+       # SAMPLE_COUNT samples in a file
+       for idx in range(0, len(lst), SAMPLE_COUNT):
            outf_name = "{}/{}_{}{}".format(TASKOUT_DIR, e, idx, ext)
            print("\t{}".format(outf_name))
            with open(outf_name, "w") as out_f:
-               json.dump(lst[idx:idx+2000], out_f)
+               json.dump(lst[idx:idx+SAMPLE_COUNT], out_f)
                print("./disB_run.sh {}_{} -o {} {}".format(e, idx, TASKOUT_DIR, outf_name), file=task_file)
            f_lst.append(outf_name)
     else:
