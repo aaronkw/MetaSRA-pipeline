@@ -1,26 +1,23 @@
-import glob, json, os.path, pandas, sys
+import glob, json, os, os.path, sys
 
-INPUT_DIR  = '/mnt/ceph/users/humanbase/data/meta/datasets/'
-TASKOUT_DIR = '/mnt/ceph/users/yliu/projects/MetaSRA-pipeline/data/'
+#You need need to modify INPUT_DIR, TASKOUT_DIR to point to the right directory
+INPUT_DIR   = '/mnt/ceph/users/humanbase/data/meta/datasets/'
+TASKOUT_DIR = '~/ceph/projects/MetaSRA-pipeline/data/'
 
-def createAnnoTask ():
-    task_file = open('disB_tasks_anno', 'w')
-    df        = pandas.read_csv("./manual_annotations_ursa.csv", sep='\t', index_col='GSMID')
-    exps      = set()
-    for e in set(df['GSEID']):
-        if ',' in e:
-           exps.update([x.strip() for x in e.split(',')])
-        else:
-           exps.add(e)
+#create disbatch taskfile "disB_tasks_all" that include all the tasks for the input files under INPUT_DIR
+#if divide_big is set to True, then the big input file will be divided into smaller ones
+def createAllTask (task_fname='disB_tasks_all', divide_big=False):
+    task_file = open(task_fname, 'w')
+    big_files  = {}
+    for file_name in glob.glob('{}/*.json'.format(INPUT_DIR)):
+        checkFile (file_name, task_file, divide_big)
 
-    for e in exps:
-        file_name = "{}/{}.json".format(INPUT_DIR,e)
-        if os.path.exists(file_name):
-           print("./disB_run.sh {} -o {} {}".format(e, TASKOUT_DIR, file_name), file=task_file)
-        else:
-           print ("{}: file not exists".format(file_name))
+    #merge the result of big file
+    #print("#DISBATCH BARRIER", file=task_file)
+    #print("./disB_combine.sh {} -o {} {}".format("check_combine", TASKOUT_DIR, big_files), file=task_file)
     task_file.close()
 
+#generate one task for a input file_name
 def checkFile (file_name, task_file, divide_big):
     head, tail = os.path.split(file_name)
     e, ext     = os.path.splitext(tail)
@@ -45,19 +42,6 @@ def checkFile (file_name, task_file, divide_big):
        print("./disB_run.sh {} -o {} {}".format(e, TASKOUT_DIR, file_name), file=task_file)
     return f_lst
 
-#create disbatch taskfile "disB_tasks_all" that include all the tasks for the input files under INPUT_DIR
-#if divide_big is set to True, then the big input file will be divided into smaller ones
-def createAllTask (task_fname='disB_tasks_all', divide_big=False):
-    task_file = open(task_fname, 'w')
-    big_files  = {}
-    for file_name in glob.glob('{}/*.json'.format(INPUT_DIR)):
-        checkFile (file_name, task_file, divide_big)
-
-    #merge the result of big file
-    #print("#DISBATCH BARRIER", file=task_file)
-    #print("./disB_combine.sh {} -o {} {}".format("check_combine", TASKOUT_DIR, big_files), file=task_file)
-    task_file.close()
-
 #create disbatch taskfile "disB_tasks_failed" that include the task for the input files under INPUT_DIR
 #which does not have a result file under TASKOUT_DIR
 def createFailedTask (task_fname='disB_tasks_failed'):
@@ -74,5 +58,11 @@ def createFailedTask (task_fname='disB_tasks_failed'):
     task_file.close()
 
 if __name__ == "__main__":
+    if not os.path.exists(INPUT_DIR):
+        print ("INPUT DIRECTORY {} DOES NOT EXIST!".format(INPUT_DIR))
+        sys.exit(1)
+    if not os.path.exists(TASKOUT_DIR):
+        print("Create output directory {}".format(TASKOUT_DIR))
+        os.makedirs(TASKOUT_DIR)
     createAllTask()
     #createFailedTask()
