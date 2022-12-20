@@ -1,8 +1,9 @@
 import glob, json, os, os.path, sys
 
-#You need need to modify INPUT_DIR, TASKOUT_DIR to point to the right directory
+#You need need to modify INPUT_DIR, TASKOUT_DIR to point to the right input and output directory
 INPUT_DIR   = '/mnt/ceph/users/humanbase/data/meta/datasets/'
 TASKOUT_DIR = '~/ceph/projects/MetaSRA-pipeline/data/'
+
 BIG_FILE_SIZE = 300000           #when divide_big is set True, we will divide the files bigger than this size
 SAMPLE_COUNT  = 2000             #                             each resulting file will have this number of samples
 
@@ -14,9 +15,6 @@ def createAllTask (task_fname='disB_tasks_all', divide_big=False):
     for file_name in glob.glob('{}/*.json'.format(INPUT_DIR)):
         checkFile (file_name, task_file, divide_big)
 
-    #merge the result of big file
-    #print("#DISBATCH BARRIER", file=task_file)
-    #print("./disB_combine.sh {} -o {} {}".format("check_combine", TASKOUT_DIR, big_files), file=task_file)
     task_file.close()
 
 #generate one task for a input file_name

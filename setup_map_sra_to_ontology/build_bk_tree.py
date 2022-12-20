@@ -30,6 +30,8 @@ def main():
                 string_identifiers.add(syn.syn_str)
 
     print ("Building the BK-Tree...")
+    #BKTree can be created using different string distance functions. 
+    #string_metrics.bag_dist_multiset and levenshtein are two options. 
     #bk_tree = BKTree(string_metrics.bag_dist_multiset, string_identifiers)
     bk_tree = BKTree(levenshtein, string_identifiers)
 
