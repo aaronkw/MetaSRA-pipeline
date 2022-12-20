@@ -20,6 +20,6 @@ We use module and python virtual environment here. You may need to change the sc
 
 Finally, you can execute
 
-`. ./disB_submit.sh"`
+`. ./disB_submit.sh`
 
 to  submit the disBatch job to Slurm. 
