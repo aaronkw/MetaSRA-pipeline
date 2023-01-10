@@ -30,4 +30,4 @@ Execute
 
 to  submit the disBatch job to Slurm. 
 
-You may need to change the script to ask for a different set of Slurm resources and/or use different disBatch taskfile other than 'disB_tasks_all`.
+You may need to change the script to request a different set of Slurm resources and/or use different disBatch taskfile other than 'disB_tasks_all`.
