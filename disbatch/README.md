@@ -19,14 +19,14 @@ Options:
                         The file name of disBatch taskfile
 ```
 
-If you do not provide argument values in the command line, the default value of each parameter will be used. For example, the default value of `--taskfile` is `./disB_tasks_all`.
+If you do not provide argument values in the command line, the default value of each parameter will be used. For example, the default value of TASKFILE is `./disB_tasks_all`.
 
 In the generated taskfile,
 each line is corresponding to a [Slurm](https://slurm.schedmd.com/documentation.html) task. 
-We have a line for each non-empty data file under directory defined by `--input_dir`.
-Each line is a command executing `disB_run.sh` such as,
+We have a line for each non-empty data file under directory defined by INPUT_DIR.
+Each line is a command executing a shell script `disB_run.sh` such as,
 
-`./disB_run.sh SRP058038 -o ~/ceph/projects/MetaSRA-pipeline/data/ /mnt/ceph/users/humanbase/data/meta/datasets/SRP058038.json`,
+`./disB_run.sh SRP058038 -o ~/ceph/projects/MetaSRA-pipeline/data/ /mnt/ceph/users/humanbase/data/meta/datasets/SRP058038.json`
 
 where `SRP058038` is the task id used by disBatch and the remained parameters are passed to the program `run_pipeline.py`. In specific, `~/ceph/projects/MetaSRA-pipeline/data/` is the output directory and `/mnt/ceph/users/humanbase/data/meta/datasets/SRP058038.json` is the input file. 
 
