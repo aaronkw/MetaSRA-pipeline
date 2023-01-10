@@ -9,12 +9,11 @@ VENV_DIR=$SRC_DIR/env_python38/                # the directory of virtual enviro
                                                # you can use a different virutal environment and should change directory and command accordingly
 mkdir -p "$LOG_DIR"
 
+#set up execution environment
 module purge
 module load python3
-
 #activate the python virtual environment created beforehand
 source $VENV_DIR/bin/activate
 
 #run the command
-echo "python $SRC_DIR/run_pipeline.py $@ > $LOG_DIR/${id}.out 2> $LOG_DIR/${id}.log"
-#python $SRC_DIR/run_pipeline.py $@ > $LOG_DIR/${id}.out 2> $LOG_DIR/${id}.log
+python $SRC_DIR/run_pipeline.py $@ > $LOG_DIR/${id}.out 2> $LOG_DIR/${id}.log
