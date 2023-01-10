@@ -22,6 +22,7 @@ ENTITY_TYPE_DEF = "TYPE_DEF"
 ENTITY_EXCLUDED_TERM = "EXCLUDED_TERM"
 
 VERBOSE = False
+term_to_extra_syns_cache={}                             #save and thus avoid re-read term_to_extra_synonyms.json
 
 class Synonym:
     """
@@ -183,9 +184,8 @@ class MappableOntologyGraph(OntologyGraph):
         ]
  
        
-TERM_TO_EXTRA_SYNS={}
 def term_to_extra_synonyms():
-    if not TERM_TO_EXTRA_SYNS:
+    if not term_to_extra_syns_cache:
        cvcl_syns_f = pr.resource_filename(
            resource_package,
            join("metadata", "term_to_extra_synonyms.json")
@@ -195,8 +195,8 @@ def term_to_extra_synonyms():
            term_to_syns = json.load(f)
        if term_to_syns:
           for tid,syn_lst in term_to_syns.items():
-              TERM_TO_EXTRA_SYNS[tid] = [Synonym(syn, "ENRICHED") for syn in syn_lst]
-    return TERM_TO_EXTRA_SYNS
+              term_to_extra_syns_cache[tid] = [Synonym(syn, "ENRICHED") for syn in syn_lst]
+    return term_to_extra_syns_cache
 
 
 def build_ontology(ont_to_loc, restrict_to_idspaces=None, 
