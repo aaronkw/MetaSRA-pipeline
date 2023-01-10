@@ -1,3 +1,4 @@
+from optparse import OptionParser
 import glob, json, os, os.path, sys
 
 #You need need to modify INPUT_DIR, TASKOUT_DIR to point to the right input and output directory
@@ -58,6 +59,15 @@ def createFailedTask (task_fname='disB_tasks_failed'):
     task_file.close()
 
 if __name__ == "__main__":
+    parser = OptionParser()
+    parser.add_option("-i", "--input_dir",  help="The directory to get input files of run_pipeline.py")
+    parser.add_option("-o", "--output_dir", help="The directory to store output files of run_pipeline.py")
+    (options, args) = parser.parse_args()
+
+    if options.input_dir:
+        INPUT_DIR = options.input_dir
+    if options.output_dir:
+        TASKOUT_DIR= options.output_dir
     if not os.path.exists(INPUT_DIR):
         print ("INPUT DIRECTORY {} DOES NOT EXIST!".format(INPUT_DIR))
         sys.exit(1)
