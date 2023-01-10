@@ -60,19 +60,16 @@ def createFailedTask (input_dir=DEF_INPUT_DIR, output_dir=DEF_OUTPUT_DIR, task_f
 
 if __name__ == "__main__":
     parser = OptionParser()
-    parser.add_option("-i", "--input_dir",  help="The directory to get input files for run_pipeline.py")
-    parser.add_option("-o", "--output_dir", help="The directory to store output files for run_pipeline.py")
-    parser.add_option("-t", "--taskfile",   help="The file name of disBatch taskfile")
+    parser.add_option("-i", "--input_dir",  default=DEF_INPUT_DIR,  help="The directory to get input files for run_pipeline.py")
+    parser.add_option("-o", "--output_dir", default=DEF_OUTPUT_DIR, help="The directory to store output files for run_pipeline.py")
+    parser.add_option("-t", "--taskfile",   default=DEF_TASKFILE,   help="The file name of disBatch taskfile")
     (options, args) = parser.parse_args()
 
-    input_dir  = options.input_dir  if options.input_dir  else DEF_INPUT_DIR
-    output_dir = options.output_dir if options.output_dir else DEF_OUTPUT_DIR
-    taskfile   = options.taskfile   if options.taskfile   else DEF_TASKFILE
-    if not os.path.exists(input_dir):
-        print ("INPUT DIRECTORY {} DOES NOT EXIST!".format(input_dir))
+    if not os.path.exists(options.input_dir):
+        print ("INPUT DIRECTORY {} DOES NOT EXIST!".format(options.input_dir))
         sys.exit(1)
-    if not os.path.exists(output_dir):
-        print("Create output directory {}".format(output_dir))
-        os.makedirs(output_dir)
-    createAllTask(input_dir, output_dir, taskfile)
+    if not os.path.exists(options.output_dir):
+        print("Create output directory {}".format(options.output_dir))
+        os.makedirs(options.output_dir)
+    createAllTask(options.input_dir, options.output_dir, options.taskfile)
     #createFailedTask()
