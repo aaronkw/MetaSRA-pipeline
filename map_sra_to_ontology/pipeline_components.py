@@ -15,7 +15,7 @@ from nltk.metrics.distance import edit_distance
 
 import pkg_resources as pr
 import json
-import os
+import os, time
 from os.path import join
 
 import load_ontology
@@ -45,6 +45,7 @@ TERM_ARTIFACT_COMBOS_JSON = pr.resource_filename(resource_package, join("metadat
 TOKEN_SCORING_STRATEGY = defaultdict(lambda: 1) # TODO We want an explicit score dictionary
 
 VERBOSE = False
+CACHE   = True
 
 class MappedTerm:
     def __init__(self, term_id, consequent, orig_key, orig_val, mapping_path):
@@ -119,11 +120,14 @@ class Pipeline:
 
         # Process stages of pipeline
         for stage in self.stages:
+            sav_time = int(time.time())
             tm_graph = stage.run(tm_graph)
+            if VERBOSE:
+               print("{}: grew to {} nodes, took {}".format(stage, len(tm_graph.token_nodes), int(time.time()-sav_time)))
 
         if VERBOSE:
             print ("\n---------GRAPH----------")
-            print (tm_graph)
+            print ("{}".format(str(tm_graph)))
             print ("------------------------\n")
 
         return self.extract_mapped_terms(tm_graph)
@@ -145,7 +149,7 @@ class Pipeline:
                 return None
 
             # Find the minimum weight path to a key-value
-            m = min(kv_node_w_dists, key=lambda x: x[1])
+            m = min(kv_node_w_dists, key=lambda x: (x[1], -len(x[0].value)))
             orig_kv_node = m[0]
             path_weight = m[1]
 
@@ -483,7 +487,7 @@ class BlockCellLineNonCellLineKey_Stage:
                     self.cell_line_terms.update(term_to_suplinked[t_id])
 
     def run(self, text_mining_graph):
-        print ("Checking cell line terms for proper context...")
+        print ("{}: Checking cell line terms for proper context...".format(int(time.time())))
         kv_nodes_cellline_val = deque()
         for kv_node in text_mining_graph.key_val_nodes:
             # Find children of the key that indicate they encode a cell-line value 
@@ -544,6 +548,8 @@ class BlockCellLineNonCellLineKey_Stage:
         for remove_node in remove_nodes:
             text_mining_graph.delete_node(remove_node)
 
+        if VERBOSE:
+           print ("{}: remove {} nodes".format(int(time.time()), len(remove_nodes)))
         return text_mining_graph
 
 
@@ -871,9 +877,15 @@ class FuzzyStringMatching_Stage:
         self.query_len_thresh = query_len_thresh
         self.thresh = thresh
         self.match_numeric = match_numeric
-
+        self.query_cache   = {}
 
     def _edit_below_thresh(self, query):
+        if CACHE and (query in self.query_cache):
+            #return self.query_cache[query]
+            cached_query= self.query_cache[query]
+            if VERBOSE:
+               print("\tCached match: {}".format(cached_query))
+            return cached_query
 
         matched = []
 
@@ -910,10 +922,15 @@ class FuzzyStringMatching_Stage:
                 for match_data in self.str_to_terms[str2]:
                     # First element of 'match_data' is term_id, second is match type
                     matched.append((str2, dist, match_data[0], match_data[1]))
+
+        if CACHE:
+           self.query_cache[query]= matched
+        if VERBOSE:
+           print("\tMatched to: {}".format(matched))
         return matched
 
     def run(self, text_mining_graph):
-        print ("Performing fuzzy string matching...")
+        print ("{}: Performing fuzzy string matching..., cache size {}".format(int(time.time()), len(self.query_cache)))
         c = 0
         if VERBOSE:
             print ("%d total nodes to be matched" % len(text_mining_graph.token_nodes))

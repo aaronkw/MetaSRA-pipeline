@@ -11,7 +11,7 @@ import sys
 from collections import defaultdict, deque
 import json
 import dill
-import os
+import os, time
 from os.path import join
 
 import map_sra_to_ontology
@@ -20,7 +20,6 @@ from map_sra_to_ontology import load_ontology
 from map_sra_to_ontology import config
 import predict_sample_type
 from map_sra_to_ontology import run_sample_type_predictor
-from predict_sample_type.learn_classifier import *
 from map_sra_to_ontology import pipeline_components as pc
 from map_sra_to_ontology.load_specialist_lex import SpecialistLexicon
 from map_sra_to_ontology.pipeline_components import * 
@@ -28,10 +27,14 @@ from map_sra_to_ontology.pipeline_components import *
 def main():
     parser = OptionParser()
     #parser.add_option("-f", "--key_value_file", help="JSON file storing key-value pairs describing sample")
+    parser.add_option("-o", "--output_dir", help="The directory to store output files")
     (options, args) = parser.parse_args()
    
     input_f = args[0]
-    output_f = os.path.splitext(input_f)[0] + '_meta.json'
+    if options.output_dir:
+       output_f = '{}/{}_meta.json'.format(options.output_dir, os.path.splitext(os.path.split(input_f)[1])[0])
+    else:
+       output_f = os.path.splitext(input_f)[0] + '_meta.json'
      
     # Map key-value pairs to ontologies
     with open(input_f, "r") as f:
@@ -50,6 +53,7 @@ def main():
     all_mappings = []
     for tag_to_val in tag_to_vals:
         sample_acc_to_matches = {}
+        print("{}: start run tag_to_val {}".format(int(time.time()), tag_to_val))
         mapped_terms, real_props = pipeline.run(tag_to_val)
         mappings = {
             "mapped_terms":[x.to_dict() for x in mapped_terms],

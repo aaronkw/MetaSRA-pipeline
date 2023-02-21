@@ -22,7 +22,7 @@ def main():
 
 class SpecialistLexicon:
     def __init__(self, lex_loc):
-        print("loading SPECIALIST Lexicon...")
+        print("loading SPECIALIST Lexicon...{}".format(lex_loc))
         self.lexicon = load_lexicon(lex_loc)
         self.eui_array = []
 
